@@ -62,7 +62,7 @@
 3. 若以上都未设置，则默认密码为 `admin`
 
 如何通过 KV 设置密码：
-- 在你创建的命名空间（如 `nav_data`）里新建键：Key=`ADMIN_PASSWORD`，Value=你的密码（例如 `admin@2022!`）
+- 在你创建的命名空间（如 `nav_data`）里新建键：Key=`ADMIN_PASSWORD`，Value=你的密码（例如 `admin@!`）
 - 值请避免前后空格与换行；复制粘贴时注意不要带不可见字符
 - 更新后可能存在边缘节点同步的短暂延迟，建议刷新后台页面重试
 
@@ -82,9 +82,9 @@
 - 密码更新后不生效：等待片刻并刷新页面；确保更新的是正确命名空间
 
 相关代码参考：
-- 读取管理员密码逻辑：[getAdminPassword](file:///c:/Users/Administrator/Documents/trae/ESA_WEB/src/worker.js#L136-L144)
-- 登录校验接口 `/api/auth`：[fetch 路由](file:///c:/Users/Administrator/Documents/trae/ESA_WEB/src/worker.js#L106-L121)
-- 保存接口认证（需要 Authorization）：[POST /api/links](file:///c:/Users/Administrator/Documents/trae/ESA_WEB/src/worker.js#L62-L75)
+- 读取管理员密码逻辑：[getAdminPassword](src/worker.js#L136-L144)
+- 登录校验接口 `/api/auth`：[fetch 路由](src/worker.js#L106-L121)
+- 保存接口认证（需要 Authorization）：[POST /api/links](src/worker.js#L62-L75)
 
 ## 故障排查
 
