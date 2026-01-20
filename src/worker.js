@@ -420,12 +420,12 @@ function renderHome(data) {
       --accent-color: #6366f1;
       
       --sidebar-bg: rgba(255, 255, 255, 0.6);
-      /* 外网背景：微弱的蓝紫渐变，增加质感 */
-      --main-bg: linear-gradient(135deg, #f5f7fa 0%, #eef2f6 100%);
+      /* 外网背景：清新的淡蓝/靛青渐变，与内网绿色对应 */
+      --main-bg: linear-gradient(135deg, #e0e7ff 0%, #eff6ff 100%);
       
-      /* 面板颜色：外网为半透明白 */
-      --panel-bg: rgba(255, 255, 255, 0.45);
-      --panel-border: rgba(255, 255, 255, 0.6);
+      /* 面板颜色：半透明白，透出背景蓝 */
+      --panel-bg: rgba(255, 255, 255, 0.6);
+      --panel-border: rgba(255, 255, 255, 0.8);
       
       --text-primary: #111827;
       --text-secondary: #6b7280;
@@ -694,9 +694,10 @@ function renderHome(data) {
       -webkit-backdrop-filter: blur(20px);
       margin: 20px 30px 30px 0; /* 右下留白 */
       border-radius: 32px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      /* 增强阴影，突显层级 */
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
       border: 1px solid var(--panel-border);
-      transition: background 0.5s, border-color 0.5s; /* 添加过渡动画 */
+      transition: background 0.5s, border-color 0.5s, box-shadow 0.5s; /* 添加过渡动画 */
     }
 
     /* 移动端适配 */
