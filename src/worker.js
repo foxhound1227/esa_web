@@ -322,7 +322,7 @@ function renderHome(data) {
   const order = [...definedKeys, ...extraKeys];
 
   // 生成左侧侧边栏分类项
-  let sidebarItemsHtml = `<div class="sidebar-item active" data-cat="all" onclick="filterCategory('all', this)">
+  let sidebarItemsHtml = `<div class="sidebar-item active" data-cat="all" onclick="filterCategory('all')">
       <span class="icon">💻</span> 全部应用
       <span class="count">${links.length}</span>
   </div>`;
@@ -333,11 +333,20 @@ function renderHome(data) {
     const rawName = categoryNames[catKey] || catKey;
     const name = escapeHtml(rawName);
     sidebarItemsHtml += `
-      <div class="sidebar-item" data-cat="${escapeHtml(catKey)}" onclick="filterCategory('${escapeHtml(catKey)}', this)">
+      <div class="sidebar-item" data-cat="${escapeHtml(catKey)}" onclick="filterCategory('${escapeHtml(catKey)}')">
         <span class="icon">📂</span> ${name}
         <span class="count">${items.length}</span>
       </div>
     `;
+  });
+
+  // 生成移动端横向滚动分类栏 HTML
+  let mobileCatHtml = `<div class="cat-pill active" data-cat="all" onclick="filterCategory('all')">全部</div>`;
+  order.forEach(catKey => {
+    const items = categories[catKey] || [];
+    if (items.length === 0) return;
+    const name = escapeHtml(categoryNames[catKey] || catKey);
+    mobileCatHtml += `<div class="cat-pill" data-cat="${escapeHtml(catKey)}" onclick="filterCategory('${escapeHtml(catKey)}')">${name}</div>`;
   });
 
   // 生成右侧所有卡片
@@ -858,12 +867,60 @@ function renderHome(data) {
       overflow: hidden;
     }
 
+    /* 移动端横向滚动分类栏 */
+    .mobile-cat-bar {
+      display: none; /* 桌面端隐藏 */
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 12px;
+      padding: 0 4px 16px 4px; /* 底部留点空间给阴影 */
+      margin-bottom: 8px;
+      margin-top: -10px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .mobile-cat-bar::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+      flex: 0 0 auto;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(0,0,0,0.05);
+      border-radius: 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      white-space: nowrap;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      transition: all 0.2s;
+      cursor: pointer;
+      user-select: none;
+    }
+    .cat-pill:hover {
+      background: white;
+      transform: translateY(-1px);
+    }
+    .cat-pill.active {
+      background: var(--primary-color);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .intranet-mode .cat-pill.active {
+       background: var(--primary-color); /* 内网模式下 primary var 会变 */
+    }
+
     @media (max-width: 768px) {
-      .sidebar { display: none; } /* 移动端简单处理：隐藏侧边栏 */
+      .sidebar { display: none; } /* 修复：移动端隐藏侧边栏 */
       .header { padding: 0 16px; }
       .apps-container { padding: 16px; }
       .grid { grid-template-columns: 1fr; }
+      
+      /* 移动端分类栏显示 */
+      .mobile-cat-bar { display: flex; }
     }
+
+
   </style>
 </head>
 <body>
@@ -881,8 +938,6 @@ function renderHome(data) {
   </div>
 
   <!-- 主内容 -->
-  <div class="main-content">
-    
   <!-- 主内容 -->
   <div class="main-content">
     
@@ -910,9 +965,10 @@ function renderHome(data) {
         </div>
       </div>
 
-    <div class="apps-container">
-      
-
+      <!-- 移动端分类栏 -->
+      <div class="mobile-cat-bar" id="mobileCatBar">
+        ${mobileCatHtml}
+      </div>
 
       <!-- 网格 -->
       <div class="grid" id="appsGrid">
@@ -927,11 +983,20 @@ function renderHome(data) {
   </div>
 
   <script>
-    function filterCategory(cat, el) {
-      // 高亮处理
-      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
-      el.classList.add('active');
+    function filterCategory(cat) {
+      // 更新 Sidebar 状态
+      document.querySelectorAll('.sidebar-item').forEach(i => {
+        if (i.getAttribute('data-cat') === cat) i.classList.add('active');
+        else i.classList.remove('active');
+      });
 
+      // 更新 Mobile Pills 状态
+      document.querySelectorAll('.cat-pill').forEach(i => {
+        if (i.getAttribute('data-cat') === cat) i.classList.add('active');
+        else i.classList.remove('active');
+      });
+
+      // 过滤内容
       const cards = document.querySelectorAll('.app-card');
       cards.forEach(card => {
         if (cat === 'all' || card.getAttribute('data-category') === cat) {
@@ -941,10 +1006,8 @@ function renderHome(data) {
         }
       });
       
-      // 更新标题 (由于移除了 page-title 的动态更新需求，这里可以简化，或者更新 hero title)
-      // document.querySelector('.page-title').textContent = ... 
-      // 在新设计中，我们保持 Hero Title 为问候语，不随分类变化，这更像 Dashboard。
-      // 如果需要反馈分类变化，可以在搜索框或 Grid 上方加一个小标签，但保持 Hero 不动更加大气。
+      // 平滑滚动到顶部 (可选)
+      // window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function filterApps() {
