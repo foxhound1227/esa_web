@@ -954,7 +954,7 @@ function renderHome(data) {
       <!-- Hero 区域 -->
       <div class="hero-section">
         <div class="hero-content">
-           <h1 class="page-title">${greetingEmoji} ${greeting}，欢迎回来！</h1>
+           <h1 class="page-title"><span style="-webkit-text-fill-color: initial;">${greetingEmoji}</span> ${greeting}，欢迎回来！</h1>
            <div class="page-subtitle">${dateStr}</div>
         </div>
         
